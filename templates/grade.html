@@ -1,0 +1,35 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Вывод поставщиков</title>
+</head>
+    <body>
+        <form method="POST">
+            {% csrf_token %}
+            <h2>Список поставщиков и их товары</h2>
+            
+            
+            <h3>{{sup1.name}}</h3>
+                {% for prod in prods %}
+                    {%if prod.supplier.name == sup1.name %}
+                       <p>  {{ prod.name }} {{prod.price}} BYN</p>
+                    {% endif %}
+                {% endfor %}
+            <h3>{{sup2.name}}</h3>
+                {% for prod in prods %}
+                    {%if prod.supplier.name == sup2.name %}
+                       <p>  {{ prod.name }} {{prod.price}} BYN</p>
+                    {% endif %}
+                {% endfor %}
+                <h3>В скольки из 30 случаев вы предпочтете первого поставщика второму</h3>
+                <table>
+                    {{ form }}
+                </table>
+                {% for i in arr %}
+                <tr>
+                    <th><h1> {{i}} </h1></th>
+                </tr>
+            {% endfor %}
+        </form>
+    </body>
+</html>

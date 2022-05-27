@@ -1,0 +1,27 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Вывод поставщиков</title>
+</head>
+    <body>
+        <form method="POST">
+            {% csrf_token %}
+            <h2>Список поставщиков и их товары</h2>
+            
+            {% for sup in sups %}
+                <h3>{{sup.name}}</h3>
+                    {% for prod in prods %}
+                        {%if prod.supplier.name == sup.name %}
+                          <p>  {{ prod.name }} {{prod.price}} BYN</p>
+                        {% endif %}
+                    {% endfor %}
+            {% endfor %}
+            
+        </form>
+        <a href="{% url 'view_sorted_supplier_name' %}">Сортировка по имени поставщика<br><br></a>
+        <a href="{% url 'view_sorted_product_name' %}">Сортировка по названию продукта<br><br></a>
+        <a href="{% url 'view_sorted_product_price' %}">Сортировка по цене продукта<br><br></a>
+        <a href="{% url 'view_filtered_product_price' %}">Отфильтровать по цене<br><br></a>
+        <a href="{% url '' %}">На главную страницу<br><br></a>
+    </body>
+</html>

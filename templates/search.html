@@ -1,0 +1,26 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Поиск</title>
+</head>
+<form method="POST">
+    {% csrf_token %}
+    <h2>Список поставщиков и их товары</h2>
+    
+    {% for sup in sups %}
+        <h3>{{sup.name}}</h3>
+            {% for prod in prods %}
+                {%if prod.supplier.name == sup.name %}
+                  <p>  {{ prod.name }} {{prod.price}} BYN</p>
+                {% endif %}
+            {% endfor %}
+    {% endfor %}
+    
+</form>
+    <body>
+        <a href="{% url 'search_supplier' %}">Поиск поставщика<br><br></a>
+        <a href="{% url 'search_product_name' %}">Поиск продукта по названию<br><br></a>
+        <a href="{% url 'search_product_price' %}">Поиск продукта по цене<br><br></a> 
+        <a href="{% url '' %}">На главную страницу<br><br></a>
+    </body>
+</html>

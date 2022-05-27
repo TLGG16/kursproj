@@ -1,0 +1,25 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Вывод поставщиков</title>
+</head>
+    <body>
+        {% csrf_token %}
+        <h2>Список лучших поставщиков</h2>
+       
+        {% for sup in sups %}
+        
+        <h3>{{sup.name}}</h3> 
+                {% for prod in prods %}
+                    {%if prod.supplier.name == sup.name %}
+                        <p>  {{ prod.name }} {{prod.price}} BYN</p>
+                    {% endif %}
+                {% endfor %}
+        {% endfor %}
+        
+        <h2>Их рейтинг соответственно</h2>
+        {% for mas in mass %}
+        <h3>{{mas}}</h3> 
+        {% endfor %}
+    </body>
+</html>
