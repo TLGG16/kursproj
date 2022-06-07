@@ -36,6 +36,4 @@ urlpatterns = [
     path('grade', views.grade, name='grade'),
     path('grade_view', views.grade_view, name='grade_view'),
     path('method', views.method, name='method'),
-    #path('create_product/', views.create_product, name='create_product'),
-    #path('create_supplier/', views.create_supplier, name='create_supplier'),
 ]

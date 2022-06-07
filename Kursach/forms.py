@@ -18,7 +18,6 @@ class ProductForm(forms.Form):
     price = forms.FloatField(label="Введите цену")
     details = forms.CharField(max_length=500, label="Введите доп. информацию")
     supplier = forms.ModelChoiceField(queryset = Supplier.objects.values_list('name', flat = True))
-    #supplier вроде не работает пока что надо поебаться с foreignkey
 
 class SupplierForm(forms.Form):
     name = forms.CharField(min_length=2, max_length=50, label="Введите название постващика")

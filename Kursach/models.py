@@ -12,9 +12,8 @@ class Supplier(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        #db_table = 'Supplier'
-        # Add verbose name
         verbose_name = 'Supplier'
+
 
 
 class Product(models.Model):
@@ -24,7 +23,6 @@ class Product(models.Model):
     name = models.CharField(max_length=50,default='')
     price = models.FloatField(default = '')
     details = models.CharField(max_length=500, default='', blank= True)
-    #supplier = models.CharField(max_length=50,default=NULL)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, default=NULL)
 
 class Grades(models.Model):
