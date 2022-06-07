@@ -15,6 +15,20 @@ import numpy as np
 import json
 
 
+class Funcs():
+    def filterProdPrice(self):
+        pass
+
+    def sortSupName(self):
+        pass
+
+    def sortProdName(self):
+        pass
+
+    def sortProdPrice(self):
+        pass
+
+
 def index(request):
     user = request.user.username
     data = {'username': user}
@@ -22,6 +36,7 @@ def index(request):
 
 
 def register(request):
+
     form = RegForm()
     if request.method == 'POST':
         username = request.POST['username']
@@ -68,45 +83,26 @@ def view_suppliers(request):
         data = {"sups":sups, "prods":prods}
         return render(request, 'view_suppliers.html', context=data)
 
-@login_required(login_url='login')        
-def view_sorted_supplier_name(request):
-    if request.method =="POST":
-        pass
-    else:
+
+class SortFuncs(Funcs):
+    def sortSupName(self):
         sups = Supplier.objects.order_by('name')
-        prods = Product.objects.all()
-        data = {"sups":sups, "prods":prods}
-        return render(request, 'view_suppliers.html', context=data)
-
-@login_required(login_url='login')        
-def view_sorted_product_name(request):
-    if request.method =="POST":
-        pass
-    else:
-        sups = Supplier.objects.all()
+        return sups
+    def sortProdName(self):
         prods = Product.objects.order_by('name')
-        data = {"sups":sups, "prods":prods}
-        return render(request, 'view_suppliers.html', context=data)
+        return prods
 
-@login_required(login_url='login')
-def view_sorted_product_price(request):
-    if request.method =="POST":
-        pass
-    else:
-        sups = Supplier.objects.all()
+    def sortProdPrice(self):
         prods = Product.objects.order_by('price')
-        data = {"sups":sups, "prods":prods}
-        return render(request, 'view_suppliers.html', context=data)
+        return prods
 
-@login_required(login_url='login')    
-def view_filtered_product_price(request):
-    if request.method =="POST":
+
+class FilterFuncs(Funcs):
+    def filterProdPrice(self, min , max):
         sups = list(Supplier.objects.all())
         sups2 = list(Supplier.objects.all())
         prods = Product.objects.all()
         filtered_prods = list()
-        min = request.POST["min"]
-        max = request.POST["max"]
         min = float(min)
         max = float(max)
         for i in prods:
@@ -120,6 +116,70 @@ def view_filtered_product_price(request):
             if(flag == 0):
                 sups2.remove(i)
         data = {"sups":sups2, "prods":filtered_prods}
+        return data
+
+@login_required(login_url='login')        
+def view_sorted_supplier_name(request):
+    if request.method =="POST":
+        pass
+    else:
+       # sups = Supplier.objects.order_by('name')
+        sups2 = SortFuncs()
+        sups = sups2.sortSupName()
+        prods = Product.objects.all()
+        data = {"sups":sups, "prods":prods}
+        return render(request, 'view_suppliers.html', context=data)
+
+@login_required(login_url='login')        
+def view_sorted_product_name(request):
+    if request.method =="POST":
+        pass
+    else:
+        sups = Supplier.objects.all()
+        #prods = Product.objects.order_by('name')
+        prods2 = SortFuncs()
+        prods = prods2.sortProdName()
+        data = {"sups":sups, "prods":prods}
+        return render(request, 'view_suppliers.html', context=data)
+
+@login_required(login_url='login')
+def view_sorted_product_price(request):
+    if request.method =="POST":
+        pass
+    else:
+        sups = Supplier.objects.all()
+       # prods = Product.objects.order_by('price')
+        prods2 = SortFuncs()
+        prods = prods2.sortProdName()
+        data = {"sups":sups, "prods":prods}
+        return render(request, 'view_suppliers.html', context=data)
+
+@login_required(login_url='login')    
+def view_filtered_product_price(request):
+    if request.method =="POST":
+        # sups = list(Supplier.objects.all())
+        # sups2 = list(Supplier.objects.all())
+        # prods = Product.objects.all()
+        # filtered_prods = list()
+        # min = request.POST["min"]
+        # max = request.POST["max"]
+        # min = float(min)
+        # max = float(max)
+        # for i in prods:
+        #     if(i.price > min and i.price < max):
+        #         filtered_prods.append(i)
+        # for i in sups:
+        #     flag = 0
+        #     for j in filtered_prods:
+        #         if(i.name == j.supplier.name):
+        #             flag = 1
+        #     if(flag == 0):
+        #         sups2.remove(i)
+        min = request.POST["min"]
+        max = request.POST["max"]
+        func = FilterFuncs()
+        #data = {"sups":sups2, "prods":filtered_prods}
+        data = func.filterProdPrice(min,max)
         return render(request, 'view_suppliers.html', context=data)
     else:
         form = FilterForm()
@@ -256,27 +316,30 @@ def grade_view(request):
 
 @login_required(login_url='login')
 def method(request):
-    grades = Grades.objects.all()
-    sups = Supplier.objects.count()
-    sups2 = list(Supplier.objects.all())
-    prods = Product.objects.all()
-    mass =list()
-    for i in range(sups):
-        mark = 0
-        for p in grades:
-            buf = json.loads(p.chargrade)
-            for w in range(sups):
-                mark = mark + buf[i][w]
-        mass.append(mark)
+    try:
+        grades = Grades.objects.all()
+        sups = Supplier.objects.count()
+        sups2 = list(Supplier.objects.all())
+        prods = Product.objects.all()
+        mass =list()
+        for i in range(sups):
+            mark = 0
+            for p in grades:
+                buf = json.loads(p.chargrade)
+                for w in range(sups):
+                    mark = mark + buf[i][w]
+            mass.append(mark)
 
-    for i in range(sups-1):
-        for j in range(sups-i-1):
-            if mass[j] < mass[j+1]:
-                mass[j], mass[j+1] = mass[j+1], mass[j]
-                supbuf =sups2[j]
-                sups2[j] = sups2[j+1]
-                sups2[j+1] = supbuf
+        for i in range(sups-1):
+            for j in range(sups-i-1):
+                if mass[j] < mass[j+1]:
+                    mass[j], mass[j+1] = mass[j+1], mass[j]
+                    supbuf =sups2[j]
+                    sups2[j] = sups2[j+1]
+                    sups2[j+1] = supbuf
 
 
-    data = {'sups':sups2,'prods':prods, 'mass':mass}
-    return render(request, "method.html", context=data)
+        data = {'sups':sups2,'prods':prods, 'mass':mass}
+        return render(request, "method.html", context=data)
+    except:
+        print('Критическая ошибка')
